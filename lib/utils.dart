@@ -1,7 +1,4 @@
-  
 import 'package:flutter/material.dart';
-
-
 
 Future<void> alert(BuildContext context, title, message) {
   return showDialog<void>(

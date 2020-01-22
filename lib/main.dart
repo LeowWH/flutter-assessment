@@ -5,12 +5,12 @@ import 'package:flutterAssessment/todomodel.dart';
 import 'package:flutterAssessment/todoform.dart';
 import 'package:flutterAssessment/todolist.dart';
 
+import 'dart:convert';
+
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  // var color = Color(0xFDB100);
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -47,10 +47,13 @@ class _toDoListState extends State<toDoList> {
       ),
     );
     if (toDo != null) {
-      initialToDo.add(toDo);
+      setState(() {
+          initialToDo.add(toDo);
+      });
     }
-    print(toDo);
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +74,7 @@ class _toDoListState extends State<toDoList> {
         onPressed: _showNewToDoForm,
         tooltip: 'Increment',
         child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }

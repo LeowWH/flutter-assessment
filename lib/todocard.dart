@@ -22,11 +22,23 @@ class ToDoCardState extends State<ToDoCard> {
   Timer _timer;
   var _status = "";
 
+  @override
+   void setState(fn) {
+    if(mounted){
+      super.setState(fn);
+    }
+  }
+
   ToDoCardState(this.todo);
 
   void initState() {
     startCount();
     super.initState();
+    if(todo.status == false){
+      _status = "Incomplete";
+    }else{
+      _status = "Completed";
+    }
   }
 
   void startCount() {
@@ -37,31 +49,29 @@ class ToDoCardState extends State<ToDoCard> {
         () {
           var diff = DateTime.parse(todo.enddate).difference(DateTime.now());
           todo.lefttime = _printDuration(diff);
-          if(todo.status == false){
-            _status = "Incomplete";
-          }else{
-            _status = "Completed";
-          }
         },
       ),
     );
   }
 
   String _printDuration(Duration duration) {
+        String full = "";
         String Minutes = duration.inMinutes.remainder(60).toString();
-        String Days = duration.inDays.remainder(60).toString();
+        String Days = duration.inDays.toString();
         String Hours = (duration.inHours - (int.parse(Days) * 24)).toString();
         if(int.parse(Minutes) < 0 && (int.parse(Hours) < 0 || int.parse(Days) < 0)){
           return "Expired";
         }
-        return "$Days d $Hours hrs $Minutes min";
+
+        if(int.parse(Days) > 0){
+          full = full + "$Days d ";
+        }
+        return full + "$Hours hrs $Minutes min";
   }
 
 
   Widget get toDoCard {
     return new Positioned(
-      // right: 0.0,
-      // padding: const EdgeInsets.all(10.0),
       child: new Container(
         decoration: BoxDecoration(
           boxShadow: <BoxShadow>[
@@ -69,13 +79,10 @@ class ToDoCardState extends State<ToDoCard> {
                 color: Colors.black54,
                 blurRadius: 5.0,
                  spreadRadius: -5.0,
-                // offset: Offset(0.0, 0.0)
             )
           ],
-        // color: Colors.black54
       ),
         width: MediaQuery.of(context).size.width,
-        // height: 115.0,
         child: new Card(
           color: Colors.white,
           child: new Column(
@@ -154,7 +161,6 @@ class ToDoCardState extends State<ToDoCard> {
                     new Row(
                       children:[
                         new Text("Tick if completed"),
-                        new Padding(padding: const EdgeInsets.only(left: 5.0)),
                         Checkbox(
                           value: widget.todo.status,
                           onChanged: (bool value) {
@@ -184,11 +190,10 @@ class ToDoCardState extends State<ToDoCard> {
   @override
   Widget build(BuildContext context) {
     return new InkWell(
-      // onTap: () => showToDoDetailPage(),
+      onTap: () => showToDoDetailPage(),
       child: new Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
         child: new Container(
-          // height: 115.0,
           child: new Stack(
             children: <Widget>[
               toDoCard,
@@ -199,9 +204,9 @@ class ToDoCardState extends State<ToDoCard> {
     );
   }
 
-  // showToDoDetailPage() {
-  //   Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
-  //     return new ToDoDetailPage(todo);
-  //   }));
-  // }
+  showToDoDetailPage() {
+    Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
+      return new AddToDoFormPage(todo);
+    }));
+  }
 }
